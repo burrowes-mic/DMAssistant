@@ -1,5 +1,6 @@
 #include "Town.h"
 
+#include "Region.h"
 #include "NpcMold.h"
 #include "Race.h"
 #include "Sector.h"
@@ -9,8 +10,9 @@
 #include <iomanip>
 #include <map>
 
-Town::Town(std::vector<NpcMold>& npcMolds)
-   : mNpcMolds(npcMolds)
+Town::Town(Region& region, std::vector<NpcMold>& npcMolds)
+   : mRegion(region)
+   , mNpcMolds(npcMolds)
 {}
 
 void Town::Print() const
@@ -44,7 +46,8 @@ void Town::Print() const
    Category<Profession>& professionCategory = Profession::GetCategory();
    double percentFactor = 100.0 / mNpcMolds.size();
 
-   std::cout << "Citizens: " << mNpcMolds.size() << "\n\n";
+   std::cout << "Citizens: " << mNpcMolds.size() << "\n";
+   std::cout << "Region: " << mRegion.GetName() << "\n\n";
 
    std::cout << "Races:\n";
    for(int i = 0; i < raceCategory.Size(); ++i)

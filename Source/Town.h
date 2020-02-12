@@ -3,16 +3,18 @@
 
 #include <vector>
 
+class Region;
 class NpcMold;
 
 class Town
 {
 public:
-   Town(std::vector<NpcMold>& npcMolds);
+   Town(Region& region, std::vector<NpcMold>& npcMolds);
 
    void Print() const;
 
 private:
+   Region& mRegion;
    std::vector<NpcMold> mNpcMolds;
 };
 

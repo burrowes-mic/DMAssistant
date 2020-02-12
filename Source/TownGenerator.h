@@ -5,15 +5,14 @@
 #include <string.h>
 
 class Town;
-class Sector;
-class Profession;
+class Region;
 
 class TownGenerator
 {
 public:
-   Town* GenerateTown(int size); 
+   Town* GenerateTown(int size, Region& region); 
 
-   static TownGenerator* Create(std::string sectorFilepath, std::string professionFilepath, std::string raceFilepath);
+   static TownGenerator* Create(std::string sectorFilepath, std::string professionFilepath, std::string raceFilepath, std::string regionFilepath);
 };
 
 #endif

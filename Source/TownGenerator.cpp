@@ -1,6 +1,7 @@
 #include "TownGenerator.h"
 #include "Town.h"
 #include "Category.h"
+#include "Region.h"
 #include "Race.h"
 #include "Sector.h"
 #include "Profession.h"
@@ -68,7 +69,7 @@ private:
    prefix ## Weights.resize(prefix ## Category.Size());                 \
    ConstantSizeSelector prefix ## Selector(prefix ## Weights);
 
-Town* TownGenerator::GenerateTown(int population)
+Town* TownGenerator::GenerateTown(int population, Region& region)
 {
    DECLARE_CATEGORY_SELECTION_VARIABLES(Race, race)
    DECLARE_CATEGORY_SELECTION_VARIABLES(Sector, sector)
@@ -78,7 +79,7 @@ Town* TownGenerator::GenerateTown(int population)
    for(int i = 0; i < population; ++i)
    {
       for(int j = 0; j < raceCategory.Size(); ++j)
-         raceWeights[j] = raceCategory[j].GetWeight();
+         raceWeights[j] = raceCategory[j].GetWeight() * region.GetRaceScale(j);
       Race& chosenRace = raceCategory[raceSelector.Select()];
       
       for(int j = 0; j < sectorCategory.Size(); ++j)
@@ -92,11 +93,11 @@ Town* TownGenerator::GenerateTown(int population)
       npcMolds.push_back(NpcMold(chosenRace, chosenProfession));
    }
 
-   Town* town = new Town(npcMolds);
+   Town* town = new Town(region, npcMolds);
    return town;
 }
 
-TownGenerator* TownGenerator::Create(std::string sectorFilepath, std::string professionFilepath, std::string raceFilepath)
+TownGenerator* TownGenerator::Create(std::string sectorFilepath, std::string professionFilepath, std::string raceFilepath, std::string regionFilepath)
 {
    std::cout << "Scanning sector file..." << std::endl;
    std::vector<Sector*> sectors;
@@ -149,5 +150,24 @@ TownGenerator* TownGenerator::Create(std::string sectorFilepath, std::string pro
    else
       return nullptr;
 
+   std::cout << "Scanning region file..." << std::endl;
+   std::vector<Region*> regions;
+   std::ifstream regionFile;
+   regionFile.open(regionFilepath);
+   if(regionFile.is_open())
+   {
+      std::string line;
+      while(getline(regionFile, line))
+      {
+         Region* region = Region::ParseCsvLine(line);
+         if(!region)
+            return nullptr;
+         regions.push_back(region);
+      }
+   }
+   else
+      return nullptr;
+
+   std::cout << "Town Generator Initialized!\n\n";
    return new TownGenerator();
 }

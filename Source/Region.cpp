@@ -4,7 +4,7 @@
 
 #include <sstream>
 
-#define CENTERING_COEF 0.3
+#define CENTERING_COEF 0.8
 
 DEFINE_CLOSED_CATEGORY(Region)
 

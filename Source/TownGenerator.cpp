@@ -75,15 +75,20 @@ Town* TownGenerator::GenerateTown(int population, Region& region)
    DECLARE_CATEGORY_SELECTION_VARIABLES(Sector, sector)
    DECLARE_CATEGORY_SELECTION_VARIABLES(Profession, profession)
 
+   double urbanization = Town::CalculateUrbanization(population);
+
+   for(int j = 0; j < raceCategory.Size(); ++j)
+      raceWeights[j] = pow(raceCategory[j].GetWeight() * region.GetRaceScale(j), urbanization * -1.0 + 1.5);
+
    std::vector<NpcMold> npcMolds;
    for(int i = 0; i < population; ++i)
    {
-      for(int j = 0; j < raceCategory.Size(); ++j)
-         raceWeights[j] = raceCategory[j].GetWeight() * region.GetRaceScale(j);
+      //for(int j = 0; j < raceCategory.Size(); ++j)
+      //   raceWeights[j] = raceCategory[j].GetWeight() * region.GetRaceScale(j);
       Race& chosenRace = raceCategory[raceSelector.Select()];
       
       for(int j = 0; j < sectorCategory.Size(); ++j)
-         sectorWeights[j] = sectorCategory[j].GetWeight() * chosenRace.GetSectorScale(j);
+         sectorWeights[j] = sectorCategory[j].GetWeight(urbanization) * chosenRace.GetSectorScale(j);
       Sector& chosenSector = sectorCategory[sectorSelector.Select()];
 
       for(int j = 0; j < professionCategory.Size(); ++j)

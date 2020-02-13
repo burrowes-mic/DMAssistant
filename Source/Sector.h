@@ -15,20 +15,23 @@ class Sector
    DECLARE_CLOSED_CATEGORY(Sector)
 
 public:
-   Sector(std::string name, float weight, float urbanizationScale);
+   Sector(std::string name, double weight, double ruralScale, double urbanScale);
 
-         double                     GetWeight();
-         std::string                GetName()         { return mName; }
-   const std::vector<Profession*>&  GetProfessions()  { return mProfessions; }
+   std::string  GetName() const { return mName; }
+   double GetWeight(double urbanization) const;
+   const std::vector<Profession*>&  GetProfessions() const { return mProfessions; }
 
    void AddNewProfession(std::string name, double weight, double urbanizationScale) { mProfessions.push_back(new Profession(name, *this, weight, urbanizationScale)); }
 
    static Sector* ParseCsvLine(std::string line);
 
 private:
+   double _CalculateUrbanizationFactor(double urbanization) const;
+
    std::string mName;
-   float mWeight;
-   float mUrbanizationScale;
+   double mWeight;
+   double mRuralScale;
+   double mUrbanScale;
 
    std::vector<Profession*> mProfessions;
 };

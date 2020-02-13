@@ -47,15 +47,16 @@ void Town::Print() const
    double percentFactor = 100.0 / mNpcMolds.size();
 
    std::cout << "Citizens: " << mNpcMolds.size() << "\n";
+   std::cout << CalculateTownType((int)mNpcMolds.size()) << " (Urbanization: " << std::setprecision(4) << CalculateUrbanization((int)mNpcMolds.size()) << ")\n";
    std::cout << "Region: " << mRegion.GetName() << "\n\n";
 
    std::cout << "Races:\n";
    for(int i = 0; i < raceCategory.Size(); ++i)
    {
       if(raceCounts.count(i))
-         std::cout << std::setw(12) << raceCategory[i].GetName() << ": " << std::setw(4) << raceCounts[i] << std::setw(7) << "(" << (double)raceCounts[i] * percentFactor << "%)\n";
+         std::cout << std::setw(12) << raceCategory[i].GetName() << ": " << std::setw(5) << raceCounts[i] << std::setw(7) << "(" << std::setprecision(3) << (double)raceCounts[i] * percentFactor << "%)\n";
       else
-         std::cout << std::setw(12) << raceCategory[i].GetName() << ":" << std::setw(4) << "0" << std::setw(7) << "(0)%\n";
+         std::cout << std::setw(12) << raceCategory[i].GetName() << ":" << std::setw(5) << "0" << std::setw(7) << "(0.00)%\n";
    }
    std::cout << "\n";
 
@@ -63,9 +64,9 @@ void Town::Print() const
    for(int i = 0; i < sectorCategory.Size(); ++i)
    {
       if(sectorCounts.count(i))
-         std::cout << std::setw(24) << sectorCategory[i].GetName() << ": " << std::setw(4) << sectorCounts[i] << std::setw(7) << "(" << (double)sectorCounts[i] * percentFactor << "%)\n";
+         std::cout << std::setw(24) << sectorCategory[i].GetName() << ": " << std::setw(4) << sectorCounts[i] << std::setw(7) << "(" << std::setprecision(3) << (double)sectorCounts[i] * percentFactor << "%)\n";
       else
-         std::cout << std::setw(24) << sectorCategory[i].GetName() << ":" << std::setw(4) << "0" << std::setw(7) << "(0)%\n";
+         std::cout << std::setw(24) << sectorCategory[i].GetName() << ": " << std::setw(4) << "0" << std::setw(7) << "(0.00)%\n";
    }
    std::cout << "\n";
 
@@ -73,7 +74,32 @@ void Town::Print() const
    for(int i = 0; i < professionCategory.Size(); ++i)
    {
       if(professionCounts.count(i))
-         std::cout << std::setw(20) << professionCategory[i].GetName() << ": " << std::setw(4) << professionCounts[i] << std::setw(7) << "(" << (double)professionCounts[i] * percentFactor << "%)\n";
+         std::cout << std::setw(20) << professionCategory[i].GetName() << ": " << std::setw(4) << professionCounts[i] << std::setw(7) << "(" << std::setprecision(3) << (double)professionCounts[i] * percentFactor << "%)\n";
    }
    std::cout << "\n";
+}
+
+double Town::CalculateUrbanization(int population)
+{
+   return pow((double)population / 100000.0, 0.15);
+}
+
+std::string Town::CalculateTownType(int population)
+{
+   if(population <= 80)
+      return "Thorp";
+   else if(population < 400)
+      return "Hamlet";
+   else if(population < 900)
+      return "Village";
+   else if(population < 2000)
+      return "Small Town";
+   else if(population < 5000)
+      return "Large Town";
+   else if(population < 12000)
+      return "Small City";
+   else if(population < 25000)
+      return "Large City";
+   else
+      return "Metropolis";
 }

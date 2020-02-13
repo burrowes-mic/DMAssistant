@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
       cout << "Unable to create TownGenerator!" << endl;
       return -1;
    }
-   Town* town = generator->GenerateTown(10000, Region::GetCategory()[0]);
+   Town* town = generator->GenerateTown(31000, Region::GetCategory()[0]);
    town->Print();
 
    return 0;

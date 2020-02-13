@@ -13,6 +13,9 @@ public:
 
    void Print() const;
 
+   static double CalculateUrbanization(int population);
+   static std::string CalculateTownType(int population);
+
 private:
    Region& mRegion;
    std::vector<NpcMold> mNpcMolds;

@@ -4,27 +4,30 @@
 
 #include <sstream>
 
-#define FIELD_COUNT 3
+#define FIELD_COUNT 4
+#define CENTERING_COEF 0.6
 
 DEFINE_CLOSED_CATEGORY(Sector)
 
-Sector::Sector(std::string name, float weight, float urbanizationScale)
+Sector::Sector(std::string name, double weight, double ruralScale, double urbanScale)
    : INITIALIZE_CLOSED_CATEGORY(Sector)
    , mName(name)
    , mWeight(weight)
-   , mUrbanizationScale(urbanizationScale)
+   , mRuralScale(ruralScale)
+   , mUrbanScale(urbanScale)
 {}
 
-double Sector::GetWeight()
+double Sector::GetWeight(double urbanization) const
 {
-   return mWeight;
+   return mWeight * _CalculateUrbanizationFactor(urbanization);
 }
 
 Sector* Sector::ParseCsvLine(std::string line)
 {
    std::string name;
-   float weight;
-   float urbanizationWeight;
+   double weight;
+   double ruralScale;
+   double urbanScale;
 
    std::string val;
    std::istringstream iline(line);
@@ -42,11 +45,16 @@ Sector* Sector::ParseCsvLine(std::string line)
          break;
 
       case 2:
-         urbanizationWeight = stof(val);
+         ruralScale = stof(val);
+         break;
+
+      case 3:
+         urbanScale = stof(val);
          break;
 
       default:
-         return nullptr;
+         break;
+         //return nullptr;
       }
 
       ++linesRead;
@@ -55,5 +63,10 @@ Sector* Sector::ParseCsvLine(std::string line)
    if(linesRead < FIELD_COUNT)
       return nullptr;
 
-   return new Sector(name, weight, urbanizationWeight);
+   return new Sector(name, weight, ruralScale, urbanScale);
+}
+
+double Sector::_CalculateUrbanizationFactor(double urbanization) const
+{
+   return 1 + CENTERING_COEF * (urbanization * (mUrbanScale - mRuralScale) + mRuralScale);
 }
